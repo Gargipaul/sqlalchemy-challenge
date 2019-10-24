@@ -8,7 +8,7 @@ from sqlalchemy import create_engine, func, desc
 
 from flask import Flask, jsonify
 
-##############
+
 engine = create_engine(r"sqlite:///C:\Users\gargi\sqlalchemy-challenge\Resources\hawaii.sqlite")
 
 
@@ -32,15 +32,15 @@ app = Flask(__name__)
 
 @app.route("/api/v1.0/precipitation")
 def precipitation():
-   # Create our session (link) from Python to the DB
+   
    session = Session(engine)
    
-   # Query all precipitaion
+   
    prcp_data= session.query(measurement.date, measurement.prcp).all()
 
    session.close()
-   # Convert list of tuples into normal list
-   # Prcption = list(np.ravel(prcp_data))
+   
+
    all_data = []
    for date, prcp in prcp_data:
        prcp_dict = {}
@@ -51,20 +51,20 @@ def precipitation():
 
 
 
-# Dictionary of TOBS Data
+
     
 
 @app.route("/api/v1.0/tobs")
 def tobs():
-   # Create our session (link) from Python to the DB
+   
    session = Session(engine)
    
-   # Query all precipitaion
+   
    tobs_data= session.query(measurement.date, measurement.tobs).all()
 
    session.close()
-   # Convert list of tuples into normal list
-   # Prcption = list(np.ravel(prcp_data))   
+   
+
    tobs_data = []
    results = session.query(measurement).filter(measurement.date > '2016-10-09').filter(measurement.date <= '2017-10-09').all()
    for data in results:
@@ -78,10 +78,10 @@ def tobs():
 def stations():
     
 
-    # Query all stations
+    
     station_results = session.query(station.station).all()
 
-    # Convert list of tuples into normal list
+    
     station_list = list(np.ravel(station_results))
 
     return jsonify(station_list)
@@ -91,10 +91,10 @@ def stations():
 def tobs():
     
 
-    # Query all tobs
+    
     tobs_results = session.query(measurement.tobs).all()
 
-    # Convert list of tuples into normal list
+    
     tobs_list = list(np.ravel(tobs_results))
 
     return jsonify(tobs_list)
