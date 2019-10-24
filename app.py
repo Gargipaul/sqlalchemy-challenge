@@ -66,7 +66,7 @@ def precip():
 
     
     all_tobs = []
-    results = session.query(measurement).filter(measurement.date > '2016-10-09').filter(measurement.date <= '2017-10-09').all()
+    results = session.query(Measurement).filter(Measurement.date > '2016-10-09').filter(Measurement.date <= '2017-10-09').all()
     for data in results:
         tobs_dict = {}
         tobs_dict[data.date] = data.tobs
@@ -93,7 +93,7 @@ def tobs():
     
 
     
-    tobs_results = session.query(measurement.tobs).all()
+    tobs_results = session.query(Measurement.tobs).all()
 
   
     tobs_list = list(np.ravel(tobs_results))
@@ -103,18 +103,22 @@ def tobs():
 
 @app.route("/api/v1.0/<startdate>")
 def tobs_by_date(startdate):
+    start_temp = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
+        filter(Measurement.date >= startdate).all()
+
+    temp = list(np.ravel(start_temp))
     
 
-    return jsonify(session.query(func.min(measurement.tobs), func.avg(measurement.tobs), func.max(measurement.tobs)).\
-        filter(measurement.date >= startdate).all())
-
+    return jsonify(temp)
 
 @app.route("/api/v1.0/<startdate>/<enddate>")
 def tobs_by_date_range(startdate, enddate):
+    start_end = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
+        filter(Measurement.date >= startdate).filter(Measurement.date <= enddate).all()
+    new = list(np.ravel(start_end))
     
+    return jsonify(new)
 
-    return jsonify(session.query(func.min(measurement.tobs), func.avg(measurement.tobs), func.max(measurement.tobs)).\
-        filter(measurement.date >= startdate).filter(measurement.date <= enddate).all())
 
 
 if __name__ == "__main__":
