@@ -9,7 +9,8 @@ from sqlalchemy import create_engine, func, desc
 from flask import Flask, jsonify
 
 ##############
-engine = create_engine("sqlite:///C:\\Users\\gargi\\sqlalchemy-challenge\\Resources\\hawaii.sqlite")
+engine = create_engine(r"sqlite:///C:\Users\gargi\sqlalchemy-challenge\Resources\hawaii.sqlite")
+
 
 Base = automap_base()
 Base.prepare(engine, reflect=True)
@@ -33,7 +34,7 @@ app = Flask(__name__)
 def precipitation():
    # Create our session (link) from Python to the DB
    session = Session(engine)
-   """Return a list of all precipitaion with date"""
+   
    # Query all precipitaion
    prcp_data= session.query(measurement.date, measurement.prcp).all()
 
@@ -57,7 +58,7 @@ def precipitation():
 def tobs():
    # Create our session (link) from Python to the DB
    session = Session(engine)
-   """Return a list of all tobs with date"""
+   
    # Query all precipitaion
    tobs_data= session.query(measurement.date, measurement.tobs).all()
 
@@ -75,8 +76,7 @@ def tobs():
 
 @app.route("/api/v1.0/stations")
 def stations():
-    print("Server recieved request for STATIONS...")
-    """Return a JSON list of stations from the dataset."""
+    
 
     # Query all stations
     station_results = session.query(station.station).all()
@@ -89,8 +89,7 @@ def stations():
 
 @app.route("/api/v1.0/tobs")
 def tobs():
-    print("Server recieved request for TOBS...")
-    """Return a JSON list of Temperature Observations (tobs) for the previous year."""
+    
 
     # Query all tobs
     tobs_results = session.query(measurement.tobs).all()
@@ -103,8 +102,7 @@ def tobs():
 
 @app.route("/api/v1.0/<startdate>")
 def tobs_by_date(startdate):
-    """Return a JSON list of the minimum temperature, the average temperature, and the max temperature for a given start or start-end range.
-    When given the start only, calculate TMIN, TAVG, and TMAX for all dates greater than and equal to the start date."""
+    
 
     return jsonify(session.query(func.min(measurement.tobs), func.avg(measurement.tobs), func.max(measurement.tobs)).\
         filter(measurement.date >= startdate).all())
