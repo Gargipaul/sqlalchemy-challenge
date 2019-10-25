@@ -9,6 +9,7 @@ from sqlalchemy import create_engine, func, desc
 from flask import Flask, jsonify
 
 ##############
+
 engine = create_engine(r'sqlite:///C:\Users\gargi\sqlalchemy-challenge\Instructions\Resources\hawaii.sqlite')
 
 
@@ -25,13 +26,18 @@ Station = Base.classes.station
 
 session = Session(engine)
 
-
+#################
 # Flask Setup
 #################
+
 app = Flask(__name__)
 
+
+
+#################
 # Flask route
 #################
+
 
 @app.route("/")
 def welcome():
@@ -46,8 +52,9 @@ def welcome():
     
 
 
-
-# presipitation result
+#######################
+# precipitation result
+#######################
 
 @app.route("/api/v1.0/precipitation")
 def precipitation():
@@ -70,7 +77,9 @@ def precipitation():
 
 
 
+#################
 # station result
+#################
 
 @app.route("/api/v1.0/stations")
 def stations():
@@ -84,8 +93,12 @@ def stations():
 
     return jsonify(station_list)
 
+
+################
 # tobs result
-  
+################
+
+
 @app.route("/api/v1.0/tobs")
 def tobs():
     
@@ -98,7 +111,11 @@ def tobs():
 
     return jsonify(tobs_list)
 
-    # startdate get Min/Avg/Max temp  
+
+################################
+# startdate get Min/Avg/Max temp  
+################################
+
 
 @app.route("/api/v1.0/<startdate>")
 def tobs_by_date(startdate):
@@ -111,7 +128,11 @@ def tobs_by_date(startdate):
 
     return jsonify(temp)
 
+
+#########################################
 # start/end date and get Min/Avg/Max temp  
+#########################################
+
 
 @app.route("/api/v1.0/<start>/<end>")
 def tobs_trip(start,end):
