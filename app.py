@@ -30,15 +30,24 @@ session = Session(engine)
 #################
 app = Flask(__name__)
 
+# Flask route
+#################
+
 @app.route("/")
 def welcome():
     
-    return ("Welcome to Hawaii")
+    return(
+        "/api/v1.0/precipitation<br/><br/>"
+        "/api/v1.0/stations<br/><br/>"
+        "/api/v1.0/tobs<br/><br/>"
+        "/api/v1.0/startdate<br/><br/>"
+        "/api/v1.0/start/end<br/>"
+    )
     
 
 
 
-
+# presipitation result
 
 @app.route("/api/v1.0/precipitation")
 def precipitation():
@@ -47,7 +56,7 @@ def precipitation():
    
 
    prcp_data= session.query(Measurement.date, Measurement.prcp).all()
-   print(prcp_data)
+
    session.close()
    
    all_data = []
@@ -60,20 +69,8 @@ def precipitation():
    return jsonify(all_data)
 
 
-@app.route("/api/v1.0/precipitation")
-def precip():
 
-
-    
-    all_tobs = []
-    results = session.query(Measurement).filter(Measurement.date > '2016-10-09').filter(Measurement.date <= '2017-10-09').all()
-    for data in results:
-        tobs_dict = {}
-        tobs_dict[data.date] = data.tobs
-        all_tobs.append(tobs_dict)
-
-    return jsonify(all_tobs)
-
+# station result
 
 @app.route("/api/v1.0/stations")
 def stations():
@@ -87,7 +84,8 @@ def stations():
 
     return jsonify(station_list)
 
-
+# tobs result
+  
 @app.route("/api/v1.0/tobs")
 def tobs():
     
@@ -100,9 +98,11 @@ def tobs():
 
     return jsonify(tobs_list)
 
+    # startdate get Min/Avg/Max temp  
 
 @app.route("/api/v1.0/<startdate>")
 def tobs_by_date(startdate):
+
     start_temp = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
         filter(Measurement.date >= startdate).all()
 
@@ -111,13 +111,28 @@ def tobs_by_date(startdate):
 
     return jsonify(temp)
 
-@app.route("/api/v1.0/<startdate>/<enddate>")
-def tobs_by_date_range(startdate, enddate):
-    start_end = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
-        filter(Measurement.date >= startdate).filter(Measurement.date <= enddate).all()
-    new = list(np.ravel(start_end))
+# start/end date and get Min/Avg/Max temp  
+
+@app.route("/api/v1.0/<start>/<end>")
+def tobs_trip(start,end):
+
+     
     
-    return jsonify(new)
+    start_date= dt.datetime.strptime(start, '%Y-%m-%d')
+    end_date= dt.datetime.strptime(end,'%Y-%m-%d')
+    last_year = dt.timedelta(days=365)
+    start = start_date-last_year
+    end = end_date-last_year
+    
+    trip_data = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
+        filter(Measurement.date >= start).filter(Measurement.date <= end).all()
+   
+    tobs_trip = list(np.ravel(trip_data))
+    
+    return jsonify(tobs_trip)
+    
+
+
 
 
 
