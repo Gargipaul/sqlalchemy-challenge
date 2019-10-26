@@ -5,12 +5,12 @@ import sqlalchemy
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, func, desc
-
+import os
 from flask import Flask, jsonify
 
-##############
-
-engine = create_engine(r'sqlite:///C:\Users\gargi\sqlalchemy-challenge\Instructions\Resources\hawaii.sqlite')
+#######################################################
+print(os.path)
+engine = create_engine('sqlite:///Resources/hawaii.sqlite')
 
 
 Base = automap_base()
@@ -141,9 +141,8 @@ def tobs_trip(start,end):
     
     start_date= dt.datetime.strptime(start, '%Y-%m-%d')
     end_date= dt.datetime.strptime(end,'%Y-%m-%d')
-    last_year = dt.timedelta(days=365)
-    start = start_date-last_year
-    end = end_date-last_year
+    start = start_date
+    end = end_date
     
     trip_data = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
         filter(Measurement.date >= start).filter(Measurement.date <= end).all()
