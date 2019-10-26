@@ -73,6 +73,7 @@ def precipitation():
        prcp_dict["date"] = date
        prcp_dict["prcp"] = prcp
        all_data.append(prcp_dict)
+       session.close()
    return jsonify(all_data)
 
 
@@ -88,7 +89,7 @@ def stations():
    
     station_results = session.query(Station.station).all()
 
-    
+    session.close()
     station_list = list(np.ravel(station_results))
 
     return jsonify(station_list)
@@ -106,7 +107,7 @@ def tobs():
     
     tobs_results = session.query(Measurement.tobs).all()
 
-  
+    session.close()
     tobs_list = list(np.ravel(tobs_results))
 
     return jsonify(tobs_list)
@@ -120,8 +121,10 @@ def tobs():
 @app.route("/api/v1.0/<startdate>")
 def tobs_by_date(startdate):
 
-    start_temp = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
-        filter(Measurement.date >= startdate).all()
+    start_temp = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs).\
+    filter(Measurement.date >= startdate)).all()
+
+    session.close()
 
     temp = list(np.ravel(start_temp))
     
@@ -146,7 +149,7 @@ def tobs_trip(start,end):
     
     trip_data = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
         filter(Measurement.date >= start).filter(Measurement.date <= end).all()
-   
+    session.close()
     tobs_trip = list(np.ravel(trip_data))
     
     return jsonify(tobs_trip)
